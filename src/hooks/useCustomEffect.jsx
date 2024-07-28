@@ -7,8 +7,10 @@ const useCustomEffect = (callback, dependencies) => {
   // First Render
   if (isFirstRender.current) {
     isFirstRender.current = false;
-    callback();
-    return;
+    const cleanup = callback();
+    return () => {
+      if (cleanup && typeof cleanup == "function") cleanup();
+    };
   }
 
   // Dependency Changes Check
@@ -17,11 +19,13 @@ const useCustomEffect = (callback, dependencies) => {
     ? JSON.stringify(prevDependency.current) != JSON.stringify(dependencies)
     : true;
 
-  if (dependencyChanged) callback();
+  if (dependencyChanged) {
+    const cleanup = callback();
+    return () => {
+      if (cleanup && typeof cleanup == "function" && dependencies) cleanup();
+    };
+  }
   prevDependency.current = dependencies || [];
-
-
-
 
   // Cleanup
 };
