@@ -27,7 +27,7 @@ const useCustomEffect = (callback, dependencies) => {
   }
   prevDependency.current = dependencies || [];
 
-  // Cleanup
+  
 };
 
 export default useCustomEffect;
